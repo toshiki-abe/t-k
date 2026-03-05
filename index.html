@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Profile Book</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+/* ================================================================
+   WEDDING PROFILE BOOK  |  Botanical Luxe Edition
+   ================================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --forest:      #192f21;   /* 最深 — カバー背景 */
+    --deep:        #274f38;   /* 濃いグリーン */
+    --main:        #3a6b4a;   /* メイングリーン */
+    --sage:        #628f71;   /* セージグリーン */
+    --pale:        #aecdb5;   /* ペールグリーン */
+    --mist:        #dbeede;   /* ミスト */
+
+    --ivory:       #faf7f0;   /* アイボリー */
+    --cream:       #f4edde;   /* クリーム */
+    --parchment:   #e8dcc8;   /* パーチメント */
+
+    --gold:        #c39540;
+    --gold-light:  #e2c270;
+    --gold-pale:   #f0e0a8;
+    --rose:        #b47c6a;
+
+    --on-dark:      rgba(255,255,255,0.92);
+    --on-dark-soft: rgba(255,255,255,0.58);
+    --on-dark-faint:rgba(255,255,255,0.18);
+
+    --text:        #1e2d22;
+    --text-mid:    #3a5040;
+    --text-soft:   #6a8070;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'Noto Serif JP', 'Yu Mincho', Georgia, serif;
+    color: var(--text);
+    background: var(--ivory);
+    overflow-x: hidden;
+}
+
+/* ================================================================
+   SCROLL PROGRESS BAR
+   ================================================================ */
+#progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--rose) 100%);
+    z-index: 9999;
+    transition: width 0.08s linear;
+    pointer-events: none;
+}
+
+/* ================================================================
+   NAVIGATION
+   ================================================================ */
+nav {
+    position: fixed;
+    top: 3px; left: 0; right: 0;
+    background: rgba(20, 42, 28, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: 12px 24px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3px 18px;
+    z-index: 998;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+nav a {
+    color: rgba(255,255,255,0.62);
+    text-decoration: none;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    padding: 3px 0;
+    transition: color 0.3s;
+    position: relative;
+}
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: var(--gold-light);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+}
+nav a:hover, nav a.active { color: var(--gold-light); }
+nav a:hover::after, nav a.active::after { transform: scaleX(1); }
+
+/* ================================================================
+   SCROLL REVEAL ANIMATION
+   ================================================================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(46px);
+    transition: opacity 0.8s cubic-bezier(.22,.84,.36,1),
+                transform 0.8s cubic-bezier(.22,.84,.36,1);
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.10s; }
+.reveal-delay-2 { transition-delay: 0.20s; }
+.reveal-delay-3 { transition-delay: 0.30s; }
+.reveal-delay-4 { transition-delay: 0.40s; }
+.reveal-delay-5 { transition-delay: 0.50s; }
+
+/* ================================================================
+   COVER
+   ================================================================ */
+#cover {
+    min-height: 100vh;
+    background: var(--forest);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 40px 90px;
+    position: relative;
+    overflow: hidden;
+}
+/* 中央グロー */
+#cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 65% 55% at 50% 52%, rgba(58,107,74,0.30) 0%, transparent 70%);
+    pointer-events: none;
+}
+/* ボタニカルアーチSVG */
+.cover-arch {
+    position: absolute; inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    overflow: hidden;
+}
+.cover-arch svg {
+    width: 100%;
+    max-width: 680px;
+    height: auto;
+    opacity: 0;
+    animation: archFadeIn 2.2s ease 0.3s forwards;
+}
+@keyframes archFadeIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* フローティングリーフ */
+.leaf-float {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    font-size: 1rem;
+    animation: floatUp linear infinite;
+}
+@keyframes floatUp {
+    0%   { transform: translateY(110vh) rotate(0deg) scale(0.6); opacity: 0; }
+    8%   { opacity: 0.35; }
+    88%  { opacity: 0.15; }
+    100% { transform: translateY(-15vh) rotate(400deg) scale(1.1); opacity: 0; }
+}
+
+.cover-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 580px;
+}
+
+.cover-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.42em;
+    color: var(--gold-light);
+    margin-bottom: 36px;
+    animation: cFadeDown 1.2s ease 0.4s both;
+}
+.cover-names-wrap {
+    animation: cFadeUp 1.4s ease 0.6s both;
+}
+.cover-names {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 8vw, 4.6rem);
+    font-weight: 300;
+    color: var(--on-dark);
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+}
+.cover-amp {
+    display: block;
+    font-style: italic;
+    color: var(--gold-light);
+    font-size: 0.8em;
+    line-height: 1.1;
+    margin: 4px 0;
+}
+.cover-ja {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.28em;
+    color: var(--on-dark-soft);
+    margin-top: 12px;
+    font-family: 'Noto Serif JP', serif;
+}
+.cover-badge {
+    font-size: 0.66rem;
+    letter-spacing: 0.5em;
+    color: var(--on-dark-soft);
+    margin-top: 26px;
+    text-transform: uppercase;
+    animation: cFadeUp 1.4s ease 0.8s both;
+}
+.cover-venue {
+    margin-top: 40px;
+    padding: 16px 36px;
+    border: 1px solid var(--on-dark-faint);
+    background: rgba(255,255,255,0.04);
+    animation: cFadeUp 1.4s ease 1.0s both;
+}
+.cover-venue-name {
+    font-size: 0.86rem;
+    color: var(--on-dark);
+    letter-spacing: 0.14em;
+}
+.cover-venue-addr {
+    font-size: 0.7rem;
+    color: var(--on-dark-soft);
+    margin-top: 4px;
+    letter-spacing: 0.06em;
+}
+.cover-scroll {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--on-dark-soft);
+    font-size: 0.6rem;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    animation: cFadeIn 2s ease 1.6s both;
+}
+.scroll-stem {
+    width: 1px;
+    height: 44px;
+    background: linear-gradient(to bottom, var(--gold-light), transparent);
+    animation: stemPulse 2.4s ease-in-out 1.6s infinite;
+}
+@keyframes stemPulse {
+    0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+    50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    51%  { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; opacity: 0.3; }
+}
+@keyframes cFadeDown { from { opacity:0; transform: translateY(-18px); } to { opacity:1; transform:none; } }
+@keyframes cFadeUp   { from { opacity:0; transform: translateY(18px);  } to { opacity:1; transform:none; } }
+@keyframes cFadeIn   { from { opacity:0; } to { opacity:1; } }
+
+/* ================================================================
+   SECTION — 共通
+   ================================================================ */
+.s-wrap { padding: 104px 40px 84px; }
+.s-inner { max-width: 920px; margin: 0 auto; }
+
+/* タイトルブロック */
+.s-head {
+    text-align: center;
+    margin-bottom: 64px;
+}
+.s-head .en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.48em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+}
+.s-head h2 {
+    font-family: 'Cormorant Garamond', 'Yu Mincho', serif;
+    font-size: clamp(1.9rem, 4.5vw, 2.5rem);
+    font-weight: 300;
+    letter-spacing: 0.2em;
+}
+.s-head .deco {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 18px;
+    font-size: 0.7rem;
+}
+.s-head .deco::before, .s-head .deco::after {
+    content: ''; width: 68px; height: 1px;
+}
+
+/* --- Light section (ivory) --- */
+.s-light .s-head .en   { color: var(--sage); }
+.s-light .s-head h2    { color: var(--deep); }
+.s-light .s-head .deco { color: var(--sage); }
+.s-light .s-head .deco::before,
+.s-light .s-head .deco::after { background: var(--pale); }
+
+/* --- Cream section --- */
+.s-cream { background: var(--cream); }
+.s-cream .s-head .en   { color: var(--sage); }
+.s-cream .s-head h2    { color: var(--deep); }
+.s-cream .s-head .deco { color: var(--sage); }
+.s-cream .s-head .deco::before,
+.s-cream .s-head .deco::after { background: var(--parchment); }
+
+/* --- Dark section (deep green) --- */
+.s-dark { background: var(--deep); }
+.s-dark .s-head .en   { color: var(--gold-light); }
+.s-dark .s-head h2    { color: var(--on-dark); }
+.s-dark .s-head .deco { color: var(--gold-light); }
+.s-dark .s-head .deco::before,
+.s-dark .s-head .deco::after { background: rgba(255,255,255,0.14); }
+
+/* --- Darker section (forest) --- */
+.s-forest { background: var(--forest); }
+.s-forest .s-head .en   { color: var(--gold-light); }
+.s-forest .s-head h2    { color: var(--on-dark); }
+.s-forest .s-head .deco { color: var(--gold-light); }
+.s-forest .s-head .deco::before,
+.s-forest .s-head .deco::after { background: rgba(255,255,255,0.12); }
+
+/* ================================================================
+   COUPLE PROFILE
+   ================================================================ */
+.couple-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+}
+@media (max-width: 640px) { .couple-grid { grid-template-columns: 1fr; gap: 56px; } }
+
+.profile-card { text-align: center; }
+
+.photo-frame {
+    position: relative;
+    width: 178px; height: 178px;
+    margin: 0 auto 24px;
+}
+.photo-ring {
+    position: absolute; inset: -9px;
+    border-radius: 50%;
+    border: 1px solid var(--pale);
+}
+.photo-ring::after {
+    content: ''; position: absolute; inset: 4px;
+    border-radius: 50%;
+    border: 1px solid var(--pale);
+    opacity: 0.45;
+}
+.photo-circle {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--mist), var(--ivory));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.2rem;
+    overflow: hidden;
+    border: 3px solid var(--ivory);
+    box-shadow: 0 6px 24px rgba(38,76,54,0.14);
+}
+.photo-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+.role-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    letter-spacing: 0.28em;
+    color: var(--gold);
+    border: 1px solid var(--pale);
+    padding: 3px 14px;
+    margin-bottom: 10px;
+}
+.p-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.9rem;
+    font-weight: 300;
+    color: var(--deep);
+}
+.p-yomi {
+    font-size: 0.68rem;
+    color: var(--text-soft);
+    letter-spacing: 0.1em;
+    margin-bottom: 22px;
+}
+.p-info { text-align: left; }
+.p-row {
+    display: flex; gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--mist);
+    font-size: 0.81rem;
+}
+.p-row:first-child { border-top: 1px solid var(--mist); }
+.p-label {
+    font-size: 0.66rem;
+    color: var(--sage);
+    min-width: 72px;
+    padding-top: 2px;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+}
+.p-msg {
+    margin-top: 22px;
+    padding: 18px 20px;
+    background: linear-gradient(140deg, var(--mist) 0%, var(--ivory) 100%);
+    border-left: 2px solid var(--pale);
+    font-size: 0.79rem;
+    color: var(--text-mid);
+    text-align: left;
+    line-height: 2.1;
+}
+
+/* ================================================================
+   SCHEDULE
+   ================================================================ */
+.timeline {
+    position: relative;
+    padding-left: 52px;
+    max-width: 580px;
+    margin: 0 auto;
+}
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 16px; top: 10px; bottom: 10px;
+    width: 1px;
+    background: linear-gradient(to bottom,
+        transparent,
+        var(--pale) 8%,
+        var(--pale) 92%,
+        transparent);
+}
+.tl-item {
+    position: relative;
+    padding-bottom: 44px;
+}
+.tl-item:last-child { padding-bottom: 0; }
+.tl-dot {
+    position: absolute;
+    left: -44px; top: 6px;
+    width: 17px; height: 17px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid var(--sage);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.3s, background 0.3s;
+}
+.tl-item:hover .tl-dot {
+    background: var(--sage);
+    border-color: var(--main);
+}
+.tl-dot::after {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--main);
+    transition: background 0.3s;
+}
+.tl-item:hover .tl-dot::after { background: white; }
+
+.tl-time {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    color: var(--gold);
+    font-weight: 300;
+    line-height: 1;
+}
+.tl-title {
+    font-size: 1rem;
+    color: var(--deep);
+    font-weight: 500;
+    margin: 5px 0 3px;
+}
+.tl-desc { font-size: 0.76rem; color: var(--text-soft); }
+
+/* ================================================================
+   SEATING
+   ================================================================ */
+.seating-center { text-align: center; }
+
+.stage-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--gold-light);
+    margin-bottom: 44px;
+}
+.stage-tag::before, .stage-tag::after {
+    content: ''; width: 44px; height: 1px;
+    background: rgba(196,149,64,0.45);
+}
+
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    max-width: 640px;
+    margin: 0 auto;
+}
+@media (max-width: 560px) { .tables-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.table-card {
+    background: rgba(255,255,255,0.055);
+    border: 1px solid rgba(255,255,255,0.11);
+    padding: 20px 14px;
+    cursor: default;
+    transition: background 0.35s, transform 0.35s, border-color 0.35s;
+}
+.table-card:hover {
+    background: rgba(255,255,255,0.11);
+    border-color: rgba(196,149,64,0.35);
+    transform: translateY(-4px);
+}
+.table-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    color: var(--gold-light);
+    margin-bottom: 10px;
+    letter-spacing: 0.08em;
+}
+.table-guests {
+    font-size: 0.71rem;
+    color: rgba(255,255,255,0.62);
+    line-height: 2;
+}
+.seating-note {
+    margin-top: 28px;
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.3);
+}
+
+/* ================================================================
+   STAFF
+   ================================================================ */
+.staff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+    gap: 22px;
+}
+.staff-card {
+    padding: 32px 20px;
+    background: var(--ivory);
+    border: 1px solid var(--mist);
+    text-align: center;
+    transition: transform 0.35s, box-shadow 0.35s;
+    position: relative;
+    overflow: hidden;
+}
+.staff-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--sage), var(--pale));
+    transform: scaleX(0);
+    transition: transform 0.35s;
+}
+.staff-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 36px rgba(38,76,54,0.12);
+}
+.staff-card:hover::before { transform: scaleX(1); }
+.staff-role {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+.staff-name { font-size: 1rem; color: var(--deep); font-weight: 500; }
+.staff-note { font-size: 0.71rem; color: var(--text-soft); margin-top: 8px; }
+
+/* ================================================================
+   HIGHLIGHTS
+   ================================================================ */
+.hl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(244px, 1fr));
+    gap: 28px;
+}
+.hl-card {
+    padding: 38px 24px 28px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.09);
+    position: relative;
+    transition: background 0.35s, transform 0.35s, border-color 0.35s;
+}
+.hl-card:hover {
+    background: rgba(255,255,255,0.09);
+    border-color: rgba(196,149,64,0.30);
+    transform: translateY(-5px);
+}
+.hl-num {
+    position: absolute;
+    top: -14px; left: 24px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    background: var(--gold);
+    color: var(--forest);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+}
+.hl-title {
+    font-size: 0.96rem;
+    color: var(--on-dark);
+    font-weight: 500;
+    margin-bottom: 12px;
+    margin-top: 8px;
+}
+.hl-desc { font-size: 0.77rem; color: var(--on-dark-soft); line-height: 2.05; }
+
+/* ================================================================
+   MAP / ACCESS
+   ================================================================ */
+.map-img-box {
+    width: 100%; max-width: 680px; height: 370px;
+    background: linear-gradient(135deg, var(--mist), var(--pale));
+    margin: 0 auto 0;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--pale);
+    overflow: hidden;
+    position: relative;
+}
+.map-img-box img { width: 100%; height: 100%; object-fit: cover; }
+.map-placeholder { text-align: center; color: var(--text-soft); }
+.map-placeholder .mi { font-size: 2.6rem; display: block; margin-bottom: 10px; }
+.map-placeholder p  { font-size: 0.82rem; }
+.map-placeholder small { font-size: 0.68rem; color: var(--pale); display: block; margin-top: 6px; }
+
+.map-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 36px;
+    background: var(--ivory);
+    border: 1px solid var(--mist);
+    border-top: none;
+}
+@media (max-width: 500px) { .map-info { grid-template-columns: 1fr; } }
+.mi-label { font-size: 0.63rem; color: var(--sage); letter-spacing: 0.1em; margin-bottom: 4px; }
+.mi-val   { font-size: 0.81rem; color: var(--text); }
+
+/* ================================================================
+   MESSAGES
+   ================================================================ */
+.msg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(278px, 1fr));
+    gap: 22px;
+}
+.msg-card {
+    padding: 34px 26px 26px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.09);
+    position: relative;
+    transition: background 0.35s, transform 0.35s;
+}
+.msg-card:hover {
+    background: rgba(255,255,255,0.09);
+    transform: translateY(-3px);
+}
+.msg-quot {
+    position: absolute;
+    top: 10px; left: 18px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5.5rem;
+    color: rgba(255,255,255,0.055);
+    line-height: 1;
+    user-select: none;
+}
+.msg-text {
+    font-size: 0.81rem;
+    color: rgba(255,255,255,0.72);
+    line-height: 2.15;
+    padding-top: 12px;
+    position: relative; z-index: 1;
+}
+.msg-from {
+    margin-top: 16px;
+    font-size: 0.7rem;
+    color: var(--gold-light);
+    text-align: right;
+    opacity: 0.78;
+}
+
+/* ================================================================
+   FOOTER
+   ================================================================ */
+footer {
+    background: var(--forest);
+    text-align: center;
+    padding: 80px 40px 64px;
+    border-top: 1px solid rgba(255,255,255,0.055);
+    position: relative;
+    overflow: hidden;
+}
+footer::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 50% 60% at 50% 100%, rgba(58,107,74,0.15) 0%, transparent 70%);
+}
+.footer-inner { position: relative; z-index: 1; }
+.footer-leaf {
+    font-size: 1.6rem;
+    letter-spacing: 14px;
+    color: rgba(255,255,255,0.1);
+    margin-bottom: 30px;
+}
+.footer-names {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.3rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--on-dark);
+    margin-bottom: 8px;
+}
+.footer-date {
+    font-size: 0.78rem;
+    letter-spacing: 0.3em;
+    color: var(--gold-light);
+}
+.footer-divider {
+    width: 1px; height: 44px;
+    background: rgba(255,255,255,0.1);
+    margin: 26px auto;
+}
+.footer-thanks {
+    font-size: 0.7rem;
+    color: var(--on-dark-soft);
+    letter-spacing: 0.14em;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 640px) {
+    .s-wrap { padding: 80px 24px 64px; }
+    nav { padding: 10px 16px; gap: 2px 10px; }
+    nav a { font-size: 0.62rem; }
+}
+@media print {
+    #progress, nav { display: none; }
+    .s-wrap { padding: 40px 20px; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+}
+    </style>
+</head>
+<body>
+
+<!-- SCROLL PROGRESS -->
+<div id="progress"></div>
+
+<!-- NAVIGATION -->
+<nav>
+    <a href="#cover">TOP</a>
+    <a href="#couple">おふたりのご紹介</a>
+    <a href="#schedule">スケジュール</a>
+    <a href="#seating">席次</a>
+    <a href="#staff">スタッフ</a>
+    <a href="#highlights">ハイライト</a>
+    <a href="#map">アクセス</a>
+    <a href="#messages">メッセージ</a>
+</nav>
+
+
+<!-- ================================================================
+     COVER
+     ================================================================ -->
+<section id="cover">
+
+    <!-- ボタニカルアーチ -->
+    <div class="cover-arch">
+        <svg viewBox="0 0 600 680" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- 左枝 -->
+            <path d="M55,660 Q75,545 126,428 Q168,330 238,238 Q268,196 288,142"
+                  stroke="rgba(255,255,255,0.13)" stroke-width="1.6" fill="none"/>
+            <!-- 右枝 -->
+            <path d="M545,660 Q525,545 474,428 Q432,330 362,238 Q332,196 312,142"
+                  stroke="rgba(255,255,255,0.13)" stroke-width="1.6" fill="none"/>
+            <!-- 左葉 -->
+            <ellipse cx="84"  cy="582" rx="29" ry="12" fill="rgba(255,255,255,0.085)" transform="rotate(-38,84,582)"/>
+            <ellipse cx="108" cy="478" rx="31" ry="13" fill="rgba(255,255,255,0.10)"  transform="rotate(-52,108,478)"/>
+            <ellipse cx="145" cy="372" rx="29" ry="12" fill="rgba(255,255,255,0.085)" transform="rotate(-65,145,372)"/>
+            <ellipse cx="190" cy="272" rx="27" ry="11" fill="rgba(255,255,255,0.095)" transform="rotate(-75,190,272)"/>
+            <ellipse cx="242" cy="200" rx="23" ry="10" fill="rgba(255,255,255,0.075)" transform="rotate(-84,242,200)"/>
+            <!-- 右葉 -->
+            <ellipse cx="516" cy="582" rx="29" ry="12" fill="rgba(255,255,255,0.085)" transform="rotate(38,516,582)"/>
+            <ellipse cx="492" cy="478" rx="31" ry="13" fill="rgba(255,255,255,0.10)"  transform="rotate(52,492,478)"/>
+            <ellipse cx="455" cy="372" rx="29" ry="12" fill="rgba(255,255,255,0.085)" transform="rotate(65,455,372)"/>
+            <ellipse cx="410" cy="272" rx="27" ry="11" fill="rgba(255,255,255,0.095)" transform="rotate(75,410,272)"/>
+            <ellipse cx="358" cy="200" rx="23" ry="10" fill="rgba(255,255,255,0.075)" transform="rotate(84,358,200)"/>
+            <!-- 頂点の花 -->
+            <circle cx="296" cy="132" r="5.5" fill="rgba(196,149,64,0.45)"/>
+            <circle cx="308" cy="122" r="4"   fill="rgba(196,149,64,0.32)"/>
+            <circle cx="284" cy="122" r="3.5" fill="rgba(196,149,64,0.32)"/>
+            <circle cx="300" cy="112" r="6.5" fill="rgba(196,149,64,0.24)"/>
+            <!-- 垂れ下がる小枝 -->
+            <path d="M84,582 Q62,564 56,542"  stroke="rgba(255,255,255,0.09)" stroke-width="1" fill="none"/>
+            <ellipse cx="57" cy="544" rx="15" ry="6.5" fill="rgba(255,255,255,0.07)" transform="rotate(-22,57,544)"/>
+            <path d="M516,582 Q538,564 544,542" stroke="rgba(255,255,255,0.09)" stroke-width="1" fill="none"/>
+            <ellipse cx="543" cy="544" rx="15" ry="6.5" fill="rgba(255,255,255,0.07)" transform="rotate(22,543,544)"/>
+        </svg>
+    </div>
+
+    <!-- カバーコンテンツ -->
+    <div class="cover-inner">
+        <!-- ▼ 日付を編集してください -->
+        <p class="cover-date">Saturday · ○○ ○, 2025</p>
+
+        <div class="cover-names-wrap">
+            <div class="cover-names">
+                <!-- ▼ 新郎・新婦の氏名（英語）を編集してください -->
+                <span>Groom Name</span>
+                <span class="cover-amp">&amp;</span>
+                <span>Bride Name</span>
+            </div>
+            <!-- ▼ 新郎・新婦の氏名（日本語）を編集してください -->
+            <span class="cover-ja">新郎　姓名　／　新婦　姓名</span>
+        </div>
+
+        <p class="cover-badge">Wedding Profile Book</p>
+
+        <div class="cover-venue">
+            <!-- ▼ 式場名と住所を編集してください -->
+            <p class="cover-venue-name">○○ ウェディングホール</p>
+            <p class="cover-venue-addr">〒000-0000　○○県○○市○○町 1-2-3</p>
+        </div>
+
+        <div class="cover-scroll">
+            <div class="scroll-stem"></div>
+            <span>scroll</span>
+        </div>
+    </div>
+</section>
+
+
+<!-- ================================================================
+     新郎新婦のご紹介
+     ================================================================ -->
+<section id="couple" class="s-wrap s-light">
+    <div class="s-inner">
+
+        <div class="s-head reveal">
+            <span class="en">About Us</span>
+            <h2>おふたりのご紹介</h2>
+            <div class="deco">🌿</div>
+        </div>
+
+        <div class="couple-grid">
+
+            <!-- 新郎 ▼ 情報を編集してください -->
+            <div class="profile-card reveal">
+                <div class="photo-frame">
+                    <div class="photo-ring"></div>
+                    <div class="photo-circle">
+                        <!-- 写真: <img src="groom.jpg" alt="新郎"> -->
+                        🌿
+                    </div>
+                </div>
+                <div class="role-tag">Groom</div>
+                <h3 class="p-name">新郎　姓名</h3>
+                <p class="p-yomi">（しんろう　せいめい）</p>
+                <div class="p-info">
+                    <div class="p-row"><span class="p-label">生年月日</span><span>○○年○月○日</span></div>
+                    <div class="p-row"><span class="p-label">出身地</span><span>○○県○○市</span></div>
+                    <div class="p-row"><span class="p-label">趣味</span><span>○○、○○</span></div>
+                    <div class="p-row"><span class="p-label">好きな食べ物</span><span>○○</span></div>
+                    <div class="p-row"><span class="p-label">好きな言葉</span><span>○○</span></div>
+                </div>
+                <div class="p-msg">
+                    本日はお忙しい中お集まりいただき、誠にありがとうございます。感謝の気持ちとこれからの抱負をここに添えてください。
+                </div>
+            </div>
+
+            <!-- 新婦 ▼ 情報を編集してください -->
+            <div class="profile-card reveal reveal-delay-2">
+                <div class="photo-frame">
+                    <div class="photo-ring"></div>
+                    <div class="photo-circle">
+                        <!-- 写真: <img src="bride.jpg" alt="新婦"> -->
+                        🌸
+                    </div>
+                </div>
+                <div class="role-tag">Bride</div>
+                <h3 class="p-name">新婦　姓名</h3>
+                <p class="p-yomi">（しんぷ　せいめい）</p>
+                <div class="p-info">
+                    <div class="p-row"><span class="p-label">生年月日</span><span>○○年○月○日</span></div>
+                    <div class="p-row"><span class="p-label">出身地</span><span>○○県○○市</span></div>
+                    <div class="p-row"><span class="p-label">趣味</span><span>○○、○○</span></div>
+                    <div class="p-row"><span class="p-label">好きな食べ物</span><span>○○</span></div>
+                    <div class="p-row"><span class="p-label">好きな言葉</span><span>○○</span></div>
+                </div>
+                <div class="p-msg">
+                    本日はお忙しい中お集まりいただき、誠にありがとうございます。感謝の気持ちとこれからの抱負をここに添えてください。
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ================================================================
+     スケジュール
+     ================================================================ -->
+<section id="schedule" class="s-wrap s-cream">
+    <div class="s-inner">
+
+        <div class="s-head reveal">
+            <span class="en">Today's Schedule</span>
+            <h2>本日のスケジュール</h2>
+            <div class="deco">🌿</div>
+        </div>
+
+        <!-- ▼ 時間・内容を編集してください -->
+        <div class="timeline">
+            <div class="tl-item reveal">
+                <div class="tl-dot"></div>
+                <div class="tl-time">10:30</div>
+                <div class="tl-title">ゲスト受付開始</div>
+                <div class="tl-desc">1F ロビーにてお待ちしております</div>
+            </div>
+            <div class="tl-item reveal reveal-delay-1">
+                <div class="tl-dot"></div>
+                <div class="tl-time">11:00</div>
+                <div class="tl-title">挙式</div>
+                <div class="tl-desc">チャペルにて執り行います（約30分）</div>
+            </div>
+            <div class="tl-item reveal reveal-delay-2">
+                <div class="tl-dot"></div>
+                <div class="tl-time">11:45</div>
+                <div class="tl-title">フォトセッション</div>
+                <div class="tl-desc">ガーデンにてゲストとの記念撮影</div>
+            </div>
+            <div class="tl-item reveal reveal-delay-3">
+                <div class="tl-dot"></div>
+                <div class="tl-time">13:00</div>
+                <div class="tl-title">披露宴 開宴</div>
+                <div class="tl-desc">宴会場「○○ルーム」にてご着席ください</div>
+            </div>
+            <div class="tl-item reveal reveal-delay-4">
+                <div class="tl-dot"></div>
+                <div class="tl-time">15:45</div>
+                <div class="tl-title">お色直し・再入場</div>
+                <div class="tl-desc">新婦お色直し中、歓談タイムです</div>
+            </div>
+            <div class="tl-item reveal reveal-delay-5">
+                <div class="tl-dot"></div>
+                <div class="tl-time">17:00</div>
+                <div class="tl-title">披露宴 閉宴</div>
+                <div class="tl-desc">お見送り・記念撮影</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ================================================================
+     席次
+     ================================================================ -->
+<section id="seating" class="s-wrap s-dark">
+    <div class="s-inner">
+
+        <div class="s-head reveal">
+            <span class="en">Seating Chart</span>
+            <h2>席　次</h2>
+            <div class="deco">✦</div>
+        </div>
+
+        <div class="seating-center">
+            <div class="stage-tag reveal">メインテーブル（新郎新婦）</div>
+
+            <!-- ▼ テーブル番号とゲスト名を編集してください -->
+            <div class="tables-grid">
+                <div class="table-card reveal reveal-delay-1">
+                    <div class="table-num">Table 1</div>
+                    <div class="table-guests">○○ 様<br>○○ 様<br>○○ 様<br>○○ 様</div>
+                </div>
+                <div class="table-card reveal reveal-delay-2">
+                    <div class="table-num">Table 2</div>
+                    <div class="table-guests">○○ 様<br>○○ 様<br>○○ 様<br>○○ 様</div>
+                </div>
+                <div class="table-card reveal reveal-delay-3">
+                    <div class="table-num">Table 3</div>
+                    <div class="table-guests">○○ 様<br>○○ 様<br>○○ 様<br>○○ 様</div>
+                </div>
+                <div class="table-card reveal reveal-delay-1">
+                    <div class="table-num">Table 4</div>
+                    <div class="table-guests">○○ 様<br>○○ 様<br>○○ 様<br>○○ 様</div>
+                </div>
+                <div class="table-card reveal reveal-delay-2">
+                    <div class="table-num">Table 5</div>
+                    <div class="table-guests">○○ 様<br>○○ 様<br>○○ 様<br>○○ 様</div>
+                </div>
+                <div class="table-card reveal reveal-delay-3">
+                    <div class="table-num">Table 6</div>
+                    <div class="table-guests">○○ 様<br>○○ 様<br>○○ 様<br>○○ 様</div>
+                </div>
+            </div>
+
+            <p class="seating-note reveal">※ 席次は当日変更になる場合がございます</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- ================================================================
+     スタッフ
+     ================================================================ -->
+<section id="staff" class="s-wrap s-light">
+    <div class="s-inner">
+
+        <div class="s-head reveal">
+            <span class="en">Wedding Staff</span>
+            <h2>スタッフのご紹介</h2>
+            <div class="deco">🌿</div>
+        </div>
+
+        <!-- ▼ 役割・名前・コメントを編集してください（コピーして増やせます） -->
+        <div class="staff-grid">
+            <div class="staff-card reveal">
+                <div class="staff-role">司　会</div>
+                <div class="staff-name">○○ ○○</div>
+                <div class="staff-note">本日の進行を担当します</div>
+            </div>
+            <div class="staff-card reveal reveal-delay-1">
+                <div class="staff-role">幹　事</div>
+                <div class="staff-name">○○ ○○</div>
+                <div class="staff-note">進行・お祝いをサポートします</div>
+            </div>
+            <div class="staff-card reveal reveal-delay-2">
+                <div class="staff-role">受　付</div>
+                <div class="staff-name">○○ ○○</div>
+                <div class="staff-note">ご来場をお迎えします</div>
+            </div>
+            <div class="staff-card reveal reveal-delay-3">
+                <div class="staff-role">カメラマン</div>
+                <div class="staff-name">○○ ○○</div>
+                <div class="staff-note">大切な瞬間を記録します</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ================================================================
+     ハイライト
+     ================================================================ -->
+<section id="highlights" class="s-wrap s-forest">
+    <div class="s-inner">
+
+        <div class="s-head reveal">
+            <span class="en">Today's Highlights</span>
+            <h2>今日のハイライト</h2>
+            <div class="deco">✦</div>
+            <p style="font-size:0.77rem; color:rgba(255,255,255,0.52); margin-top:14px;">
+                本日、ぜひご注目いただきたいポイントをご紹介します
+            </p>
+        </div>
+
+        <!-- ▼ タイトルと説明を編集してください（コピーして増やせます） -->
+        <div class="hl-grid">
+            <div class="hl-card reveal">
+                <div class="hl-num">1</div>
+                <div class="hl-title">ハイライト① のタイトル</div>
+                <div class="hl-desc">注目ポイントの説明をここに記入します。例：手作りウェルカムボード、お二人の出会いエピソード、感謝のムービーなど。</div>
+            </div>
+            <div class="hl-card reveal reveal-delay-1">
+                <div class="hl-num">2</div>
+                <div class="hl-title">ハイライト② のタイトル</div>
+                <div class="hl-desc">注目ポイントの説明をここに記入します。フラワーシャワー、キャンドルリレー、ゲスト参加型のイベントなど。</div>
+            </div>
+            <div class="hl-card reveal reveal-delay-2">
+                <div class="hl-num">3</div>
+                <div class="hl-title">ハイライト③ のタイトル</div>
+                <div class="hl-desc">注目ポイントの説明をここに記入します。両親への花束贈呈、サプライズ演出、感動の場面など。</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ================================================================
+     アクセス / マップ
+     ================================================================ -->
+<section id="map" class="s-wrap s-light">
+    <div class="s-inner">
+
+        <div class="s-head reveal">
+            <span class="en">Access</span>
+            <h2>アクセス</h2>
+            <div class="deco">🌿</div>
+        </div>
+
+        <div class="reveal">
+            <!-- ▼ map.png を同フォルダに置いてコメントを外してください -->
+            <div class="map-img-box">
+                <!-- <img src="map.png" alt="式場案内図"> -->
+                <div class="map-placeholder">
+                    <span class="mi">🗺️</span>
+                    <p>ここに地図画像を挿入してください</p>
+                    <small>map.png を同じフォルダに置いてコメントを外す</small>
+                </div>
+            </div>
+
+            <!-- ▼ アクセス情報を編集してください -->
+            <div class="map-info">
+                <div><div class="mi-label">式場名</div><div class="mi-val">○○ウェディングホール</div></div>
+                <div><div class="mi-label">住所</div><div class="mi-val">〒000-0000<br>○○県○○市○○町 1-2-3</div></div>
+                <div><div class="mi-label">電話番号</div><div class="mi-val">00-0000-0000</div></div>
+                <div><div class="mi-label">アクセス</div><div class="mi-val">○○線 ○○駅 より徒歩5分<br>駐車場あり（○台）</div></div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ================================================================
+     メッセージ
+     ================================================================ -->
+<section id="messages" class="s-wrap s-dark">
+    <div class="s-inner">
+
+        <div class="s-head reveal">
+            <span class="en">Messages</span>
+            <h2>おふたりへのメッセージ</h2>
+            <div class="deco">✦</div>
+        </div>
+
+        <!-- ▼ メッセージと差出人を編集してください（コピーして増やせます） -->
+        <div class="msg-grid">
+            <div class="msg-card reveal">
+                <div class="msg-quot">&ldquo;</div>
+                <div class="msg-text">○○さんへ。結婚おめでとうございます。いつも明るく周りを笑顔にしてくれるお二人が、これからも末永くお幸せでありますように。</div>
+                <div class="msg-from">— ○○ より</div>
+            </div>
+            <div class="msg-card reveal reveal-delay-1">
+                <div class="msg-quot">&ldquo;</div>
+                <div class="msg-text">本日は素晴らしい式にお招きいただきありがとうございます。お二人の笑顔が今日も最高に輝いています。いつまでもお幸せに。</div>
+                <div class="msg-from">— ○○ より</div>
+            </div>
+            <div class="msg-card reveal reveal-delay-2">
+                <div class="msg-quot">&ldquo;</div>
+                <div class="msg-text">ご結婚おめでとうございます！これからの人生をふたりで力を合わせて、笑顔あふれる家庭を築いてください。心よりお祝い申し上げます。</div>
+                <div class="msg-from">— ○○ より</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ================================================================
+     FOOTER
+     ================================================================ -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-leaf">🌿 🌸 🌿</div>
+        <!-- ▼ 名前と日付を編集してください -->
+        <div class="footer-names">Groom &amp; Bride</div>
+        <div class="footer-date">2025年 ○月 ○日</div>
+        <div class="footer-divider"></div>
+        <p class="footer-thanks">Thank you for celebrating this special day with us.</p>
+    </div>
+</footer>
+
+
+<script>
+/* ================================================================
+   1. SCROLL PROGRESS BAR
+   ================================================================ */
+const progressBar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (window.scrollY / total * 100) + '%';
+}, { passive: true });
+
+/* ================================================================
+   2. SCROLL REVEAL
+   ================================================================ */
+const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            revealObs.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.10, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+/* ================================================================
+   3. FLOATING LEAF PARTICLES (cover section)
+   ================================================================ */
+const cover  = document.getElementById('cover');
+const leaves = ['🌿', '🍃', '🌱'];
+
+for (let i = 0; i < 14; i++) {
+    const el = document.createElement('div');
+    el.className = 'leaf-float';
+    el.textContent = leaves[i % leaves.length];
+    el.style.cssText = [
+        `left: ${Math.random() * 100}%`,
+        `font-size: ${0.55 + Math.random() * 0.7}rem`,
+        `animation-duration: ${9 + Math.random() * 13}s`,
+        `animation-delay: ${Math.random() * 12}s`,
+    ].join(';');
+    cover.appendChild(el);
+}
+
+/* ================================================================
+   4. NAV ACTIVE STATE
+   ================================================================ */
+const sections = [...document.querySelectorAll('section[id]')];
+const navLinks = [...document.querySelectorAll('nav a')];
+window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 130) current = s.id;
+    });
+    navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+}, { passive: true });
+
+/* ================================================================
+   5. SMOOTH SCROLL WITH NAV OFFSET
+   ================================================================ */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (!target) return;
+        const offset = document.querySelector('nav').offsetHeight + 16;
+        window.scrollTo({
+            top: target.getBoundingClientRect().top + window.pageYOffset - offset,
+            behavior: 'smooth'
+        });
+    });
+});
+</script>
+
+</body>
+</html>
